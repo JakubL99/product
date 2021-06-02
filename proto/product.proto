@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package product;
+
+option go_package = "./proto;product";
+
+service Product {
+    rpc Call(CallRequest) returns (CallResponse) {}
+    rpc CreateProduct(CreateRequest) returns (CreateResponse) {}
+    rpc List(ListRequest) returns (ListResponse) {}
+    rpc GetProduct(GetRequest) returns (GetResponse) {}
+    rpc DeleteProduct(DeleteRequest) returns (DeleteResponse) {}
+}
+
+message CallRequest {
+    string name = 1;
+}
+
+message CallResponse {
+    string call = 1;
+}
+
+message CreateRequest {
+    string id = 1;
+    string name = 2;
+    string description = 3;
+    string platform = 4;
+    string version = 5;
+    string pegi = 6;
+    string price = 7;
+    int32 availability = 8;
+}
+
+message CreateResponse {
+    bool created = 1;
+    CreateRequest product = 2;
+}
+
+message ListRequest {
+}
+
+message ListResponse {
+    repeated CreateRequest products = 1;
+}
+
+message GetRequest {
+    string id = 1;
+}
+
+message GetResponse {
+    CreateRequest product = 1;
+}
+message DeleteRequest {
+    string id = 1;
+}
+
+message DeleteResponse {
+    bool deleted = 1;
+    CreateRequest product = 2;
+}
+// ./micro call product Product.CreateProduct '{"id": "1", "name": "Cyberpunk", "description": "cyberpunk", "platform": "ps5", "version": "pl",  "pegi": "19",  "price": "16", "availability": "10"}'

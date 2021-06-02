@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: products
+  namespace: micro
+  labels:
+    project: micro
+    micro: service
+    name: products
+    version: latest
+spec:
+  selector:
+    matchLabels:
+      micro: service
+      name: products
+      version: latest
+  template:
+    metadata:
+      labels:
+        project: micro
+        micro: service
+        name: products
+        version: latest
+    spec:
+      tolerations:
+        - key: "project"
+          operator: "Equal"
+          value: "micro"
+          effect: "NoSchedule"
+      containers:
+      - name: products
+        image: lis689/product:8.0
+        ports:
+        - containerPort: 443
+        env:
+          - name: DB_HOST
+            value: "mongodb://products-mongo:27017"
+          - name: "MICRO_API_ADDRESS" 
+            value: "443"
+          - name: "MICRO_PROXY"
+            value: "network.micro.svc.cluster.local:8443"
+          - name: "MICRO_SERVER_IMAGE"
+            value: "micro/micro:latest"
+          - name: "MICRO_SERVICE_ADDRESS"
+            value: ":8080"
+        envFrom:
+          - secretRef:
+              name: api-latest

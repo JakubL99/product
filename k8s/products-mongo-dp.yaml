@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: products-mongo
+  labels:
+    app: products-mongo
+  namespace: micro
+spec:
+  selector:
+    matchLabels:
+      app: products-mongo
+      tier: mongodb
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: products-mongo
+        tier: mongodb
+    spec:
+      containers:
+      - image: mongo
+        name: products-mongo
+        ports:
+        - containerPort: 27017
+          name: products-mongo
+        volumeMounts:
+        - name: products-mongo
+          mountPath: /data/db
+      volumes:
+      - name: products-mongo
+        persistentVolumeClaim:
+          claimName: products

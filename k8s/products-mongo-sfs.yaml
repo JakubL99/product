@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: products-mongo
+  namespace: micro
+spec:
+  serviceName: products-mongo
+  selector:
+    matchLabels:
+      app: products-mongo
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: products-mongo
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: products-mongo
+        image: mongo:3.4.1
+        command:
+        - mongod
+        - --replSet
+        - rs0
+        ports:
+        - name: products-mongo
+          containerPort: 27017
+        volumeMounts:
+        - name: products-mongo
+          mountPath: /data/db
+      volumes:
+      - name: products-mongo
+        persistentVolumeClaim:
+          claimName: products
